@@ -3,6 +3,7 @@
 #include "Jogo1.h"
 
 MAPA m;
+POSICAO heroi;
 
 void liberaMapa()
 {
@@ -19,7 +20,7 @@ void alocaMapa()
   m.matriz = malloc(sizeof(char *) * m.linhas);
   for (int i = 0; i < m.linhas; i++)
   {
-    m.matriz[i] = malloc(sizeof(char) *  m.colunas + 1);
+    m.matriz[i] = malloc(sizeof(char) * m.colunas + 1);
   }
 }
 
@@ -52,17 +53,8 @@ void imprimeMapa()
   }
 }
 
-
-int acabou()
+void encontraMapa()
 {
-  return 0;
-}
-
-void move(char direcao)
-{
-  int x;
-  int y;
-
   // Posição do pacman
   for (int i = 0; i < m.linhas; i++)
   {
@@ -70,34 +62,103 @@ void move(char direcao)
     {
       if (m.matriz[i][j] == '@')
       {
-        x = i;
-        y = j;
+        heroi.x = i;
+        heroi.y = j;
       }
     }
   }
+}
+
+int acabou()
+{
+  return 0;
+}
+
+int ehDirecao(char direcao)
+{
+  if (direcao == ESQUERDA || direcao == BAIXO || direcao ==  DIREITA || direcao == CIMA)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+int ehValida(int proximox, int proximoy)
+{
+  if (proximox >= m.linhas)
+    return 0;
+  if (proximoy >= m.colunas)
+    return 0;
+
+  return 1;
+}
+int ehVazia(int proximox, int proximoy)
+{
+  if (m.matriz[proximox][proximoy] == VAZIO)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+void andaNoMapa(int proximox, int proximoy)
+{
+  char personagem = m.matriz[heroi.x][heroi.y];
+  m.matriz[proximox][proximoy] = personagem;
+  m.matriz[heroi.x][heroi.y] = VAZIO;
+  heroi.x = proximox;
+  heroi.y = proximoy;
+}
+
+void move(char direcao)
+{
+
+  if (!ehDirecao(direcao))
+  {
+    return;
+  }
+
+  int proximox = heroi.x;
+  int proximoy = heroi.y;
 
   switch (direcao)
   {
-  case 'a':
-    m.matriz[x][y - 1] = '@';
+  case ESQUERDA:
+    proximoy--;
     break;
-  case 'w':
-    m.matriz[x - 1][y] = '@';
+  case CIMA:
+    proximox--;
     break;
-  case 's':
-    m.matriz[x + 1][y] = '@';
+  case BAIXO:
+    proximox++;
     break;
-  case 'd':
-    m.matriz[x][y + 1] = '@';
+  case DIREITA:
+    proximoy++;
     break;
   }
-  m.matriz[x][y] = '.';
+
+  if (!ehValida(proximox, proximoy))
+  {
+    return;
+  }
+
+  if (!ehVazia(proximox, proximoy))
+  {
+    return;
+  }
+  andaNoMapa(proximox, proximoy);
 }
 
 int main()
 {
   leMapa();
-
+  encontraMapa();
   do
   {
     imprimeMapa();

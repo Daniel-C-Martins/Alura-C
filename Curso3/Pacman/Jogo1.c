@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Jogo1.h"
+#include <string.h>
 
 MAPA m;
 POSICAO heroi;
 
+//
+//  Métodos para a criação do mapa
+//
 void liberaMapa()
 {
   for (int i = 0; i < m.linhas; i++)
@@ -69,14 +73,51 @@ void encontraMapa()
   }
 }
 
+void copiamapa(MAPA *destino, MAPA *origem)
+{
+  destino->linhas = origem->linhas;
+  destino->colunas = origem->colunas;
+  alocaMapa(destino);
+  for (int i = 0; i < origem->linhas; i++)
+  {
+    strcpy(destino->matriz[i], origem->matriz[i]);
+  }
+}
+
 int acabou()
 {
   return 0;
 }
 
+//
+//  Métodos da movimentação do personagem
+//
+void fantasma()
+{
+  MAPA copia;
+
+  copiamapa(&copia, &m);
+
+  for (int i = 0; i < copia.linhas; i++)
+  {
+    for (int j = 0; j < copia.colunas; j++)
+    {
+      if (copia.matriz[i][j] == FANTASMA)
+      {
+        if (ehValida(i, j + 1) && ehVazia(i, j + 1))
+        {
+          andaNoMapa(i, j + 1);
+        }
+      }
+    }
+  }
+
+  liberaMapa(&copia);
+}
+
 int ehDirecao(char direcao)
 {
-  if (direcao == ESQUERDA || direcao == BAIXO || direcao ==  DIREITA || direcao == CIMA)
+  if (direcao == ESQUERDA || direcao == BAIXO || direcao == DIREITA || direcao == CIMA)
   {
     return 1;
   }
@@ -95,6 +136,7 @@ int ehValida(int proximox, int proximoy)
 
   return 1;
 }
+
 int ehVazia(int proximox, int proximoy)
 {
   if (m.matriz[proximox][proximoy] == VAZIO)
@@ -165,6 +207,7 @@ int main()
     char comando;
     scanf(" %c", &comando);
     move(comando);
+    fantasma();
   } while (!acabou());
 
   liberaMapa();

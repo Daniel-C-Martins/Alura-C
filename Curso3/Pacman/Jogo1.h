@@ -3,6 +3,7 @@
 #define DIREITA 'd'
 #define ESQUERDA 'a'
 #define HEROI '@'
+#define FANTASMA 'f'
 #define VAZIO '.'
 #define PAREDE_VERTICAL '|'
 #define PAREDE_HORIZONTAL '-'
@@ -26,7 +27,9 @@ void encontraMapa();
 int ehDirecao(char direcao);
 int ehValida(int proximox, int proximoy);
 int ehVazia(int proximox, int proximoy);
-void andaNoMapa(int proximox, int proximoy  );
+void andaNoMapa(int proximox, int proximoy);
+void fantasma();
+void copiaMapa(MAPA *destino, MAPA *origem);
 struct posicao
 {
   int x;
@@ -34,6 +37,3 @@ struct posicao
 };
 
 typedef struct posicao POSICAO;
-
-
-

@@ -7,7 +7,7 @@ int main()
   int x = 0;
   int y = 0;
   int multi = 0;
-  int random = rand();
+  //int random = rand();
   int segundos = time(0);
   srand(segundos);
   printf("Digite um valor para a variavel y \n");
